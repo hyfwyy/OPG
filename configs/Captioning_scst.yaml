@@ -1,0 +1,43 @@
+train_file: ['data/coco/coco_karpathy/coco_karpathy_train.json']
+val_file: 'data/coco/coco_karpathy/coco_karpathy_val.json'
+test_file: 'data/coco/coco_karpathy/coco_karpathy_test.json'
+
+image_root: '/raid/datasets/coco2014/'
+val_gt_file: 'data/coco/coco_karpathy/coco_karpathy_val_gt.json'
+test_gt_file: 'data/coco/coco_karpathy/coco_karpathy_test_gt.json'
+
+image_res: 224
+
+## Training
+
+
+batch_size_train: 7
+batch_size_val: 10
+batch_size_test: 10
+
+max_tokens: 30
+label_smoothing: 0.1
+
+
+## generation configs
+max_length: 20
+min_length: 5
+num_beams: 2
+
+
+
+# for self-critical sequence training
+cider_cached_tokens: 'data/coco/coco_karpathy/coco-train-words.p'  # path to cached cPickle file used to calculate CIDEr scores
+sc_train_sample_n: 5  # number of sampled captions for sc training
+sc_baseline_type: 'greedy'  # baseline tyep of REINFORCE algorithm
+sc_beam_size: 1  # beam size for scst training
+
+
+## Other Settings
+# optimizer: {opt: adamW, lr: 1e-5, weight_decay: 0.01, lr_mult: 2}
+# schedular: {sched: linear, lr: 1e-5, num_warmup_steps: 0.1, num_training_steps: 44275}
+# 8855 * 5 epochs = 44275
+optimizer: {opt: adamW, lr: 5e-6, weight_decay: 0.01, lr_mult: 2}
+schedular: {sched: linear, lr: 5e-6, num_warmup_steps: 0.1, num_training_steps: 56642}
+# 113287/8 * 10epoch = 28321
+eval_steps: 10000

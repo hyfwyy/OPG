@@ -1,0 +1,18 @@
+train_file: ['data/coco/coco_karpathy/coco_karpathy_train.json']
+val_file: 'data/coco/coco_karpathy/coco_karpathy_val.json'
+test_file: 'data/coco/coco_karpathy/coco_karpathy_test.json'
+
+image_root: '/raid/datasets/coco2014/'
+val_gt_file: 'data/coco/coco_karpathy/coco_karpathy_val_gt1.json'
+test_gt_file: 'data/coco/coco_karpathy/coco_karpathy_test_gt1.json'
+
+image_res: 224
+max_words: 30
+
+
+result_file: 'output/test.json'
+
+# training parameters
+learning_rate: 2e-5 # bs=40 2e-5 bs=20 1e-5
+warmup_steps: 5000  # mlp+gpt-v2 transformer-v2
+weight_decay: 1e-2

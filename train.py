@@ -4,6 +4,7 @@ from torch.nn import functional as nnf
 from torch.utils.data import Dataset, DataLoader
 from enum import Enum
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, AdamW, get_linear_schedule_with_warmup
+from transformers import BertTokenizer,BertLMHeadModel
 from tqdm import tqdm
 import os
 import pickle
@@ -239,6 +240,7 @@ class ClipCaptionModel(nn.Module):
         self.prefix_length = prefix_length
         self.gpt = GPT2LMHeadModel.from_pretrained('gpt2')
         self.gpt_embedding_size = self.gpt.transformer.wte.weight.shape[1]
+        # self.bert = BertLMHeadModel.from_pretrained('bert-base-uncased')
         if mapping_type == MappingType.MLP:
             self.clip_project = MLP((prefix_size, (self.gpt_embedding_size * prefix_length) // 2,
                                      self.gpt_embedding_size * prefix_length))
@@ -291,13 +293,14 @@ def load_model(config_path: str, epoch_or_latest: Union[str, int] = '_latest'):
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
           lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:1')
     batch_size = args.bs
     epochs = args.epochs
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     model = model.to(device)
     model.train()
+    print("### Total Params: ", sum(p.numel() for p in model.parameters() if p.requires_grad))
     optimizer = AdamW(model.parameters(), lr=lr)
     train_dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=True)
     scheduler = get_linear_schedule_with_warmup(
@@ -336,18 +339,23 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', default='./data/coco/oscar_split_train.pkl')
+    parser.add_argument('--data', default='data/coco/oscar_split_ViT-B_32_train.pkl')
     parser.add_argument('--out_dir', default='./checkpoints')
     parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--save_every', type=int, default=1)
-    parser.add_argument('--prefix_length', type=int, default=10)
-    parser.add_argument('--prefix_length_clip', type=int, default=10)
+    # parser.add_argument('--prefix_length', type=int, default=10) # mlp+gpt
+    # parser.add_argument('--prefix_length_clip', type=int, default=10)# mlp+gpt
+    parser.add_argument('--prefix_length', type=int, default=40) # transformer 
+    parser.add_argument('--prefix_length_clip', type=int, default=40) # transformer
     parser.add_argument('--bs', type=int, default=40)
-    parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')
-    parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
+    # parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')# mlp+gpt
+    parser.add_argument('--only_prefix', dest='only_prefix', default=True)
+    parser.add_argument('--mapping_type', type=str, default='transformer', help='mlp/transformer')
+    # parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
     parser.add_argument('--num_layers', type=int, default=8)
     parser.add_argument('--is_rn', dest='is_rn', action='store_true')
+    # parser.add_argument('--is_rn', dest='is_rn', default=True)
     parser.add_argument('--normalize_prefix', dest='normalize_prefix', action='store_true')
     args = parser.parse_args()
     prefix_length = args.prefix_length

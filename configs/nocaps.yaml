@@ -1,0 +1,11 @@
+image_root: data/nocaps/image/ # [data/nocaps/image/val/near-domain,data/nocaps/image/val/out-domain]
+ann_root: data/nocaps/annotaions
+test_gt_file: data/nocaps/annotaions/nocaps_val_gt.json
+# ps: nocaps dataset test only
+
+image_res: 224
+max_words: 30
+# training parameters
+learning_rate: 2e-5
+warmup_steps: 5000  # mlp+gpt-v2 transformer-v2
+weight_decay: 1e-2

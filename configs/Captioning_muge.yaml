@@ -1,0 +1,11 @@
+# val_gt_file: '/raid/hyf/double-decoder-transformer-clip/dataset/valid_caption_gt.json'
+# test_gt_file: '/raid/hyf/double-decoder-transformer-clip/dataset/test_caption_gt.json'
+
+
+image_res: 224
+result_file: 'output/test.json'
+
+# training parameters
+learning_rate: 2e-5
+warmup_steps: 5000  # mlp+gpt-v2 transformer-v2
+weight_decay: 1e-2
