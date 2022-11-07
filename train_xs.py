@@ -71,13 +71,13 @@ def train_sin(dataloader,model,optimizer,scheduler,criterion,args,epoch,print_fr
         if idx % print_freq == 0:
             progress.display(idx)
         # if training process broken
-        # if idx % 5000 == 0:
-        #     torch.save({'model':model.state_dict(),
-        #                 'optimizer':optimizer.state_dict(),
-        #                 'scheduler':scheduler.state_dict(),
-        #                 'epoch':epoch
-        #                 },
-        #                os.path.join(output_dir, f"model_latest.pt"))
+        if idx % 5000 == 0:
+            torch.save({'model':model.state_dict(),
+                        'optimizer':optimizer.state_dict(),
+                        'scheduler':scheduler.state_dict(),
+                        'epoch':epoch
+                        },
+                       os.path.join(output_dir, f"model_latest.pt"))
         # if idx == 10:
         #     break
 def evaluation_sin(dataloader,model,config,args,epoch=0,val=False):
@@ -202,7 +202,7 @@ def main(args,config):
             model.load_state_dict(ckpt,strict=False)
             # optimizer.load_state_dict(ckpt['optimizer'])
             # scheduler.load_state_dict(ckpt['scheduler'])
-            # start_epoch = ckpt['epoch']+1
+            start_epoch = ckpt['epoch']+1
         print("### Total Params: ", sum(p.numel() for p in model.parameters() if p.requires_grad))
         for epoch in range(start_epoch,args.epochs): 
             print(f">>> Training epoch {epoch}")
