@@ -19,16 +19,16 @@ from typing import Tuple, Optional, Union
 from utils import coco_caption_eval,AverageMeter,ProgressMeter
 import yaml
 from dataset import create_dataset
-from muge_data.data import TextField,DataField
+
 import time
 import warnings
-from models3 import ClipCaptionModel,MappingType,ClipCaptionPrefix
+from models import ClipCaptionModel,MappingType,ClipCaptionPrefix
 import os
 import datetime
 from scheduler import create_scheduler
 from optim import create_optimizer
 from train_xs import main as main_xs
-from train_muge import main as main_muge
+
 def scst_train_iter(image, captions_gt, model, scst_criterion, config):
     model_without_ddp = model
     if hasattr(model, 'module'):
@@ -265,18 +265,6 @@ if __name__ == '__main__':
     parser.add_argument('--prefix_length_clip_tr', type=int, default=50,help='image feature length, fixed') # transformer
     # parser.add_argument('--only_prefix', dest='only_prefix', default=True) # transformer
     # parser.add_argument('--mapping_type', type=str, default='transformer', help='mlp/transformer')
-    
-    
-    # muge
-    # parser.add_argument('--muge_dataset_path', type=str, default='/raid/hyf/double-decoder-transformer-clip/dataset') 
-    # parser.add_argument('--muge_vocab_path', type=str, default='muge_data/dict/my_vocab.txt') 
-    # parser.add_argument('--muge_dict_path', type=str, default='muge_data/dict/my_dict.txt') 
-    # parser.add_argument('--bert_config_path', type=str, default='/raid/hyf/double-decoder-transformer-clip/models/bert/config_bert.json') 
-    # parser.add_argument('--muge_word_size', type=int, default=5659) 
-    # parser.add_argument('--bert_path', type=str, default='data/fix_bert-5659.pth') 
-    # parser.add_argument('--use_kd', type=bool, default=False) 
-    # parser.add_argument('--theta',type=float,default=0.005,help='kl loss parameter')
-
 
 
     args = parser.parse_args()  
@@ -289,8 +277,5 @@ if __name__ == '__main__':
         main_scst(args,config)
     else:
         config = yaml.load(open(args.config_xs, 'r'), Loader=yaml.Loader)
-        if args.dataset == 'muge':
-            main_muge(args,config)
-        else:
-            main_xs(args,config)
+        main_xs(args,config)
     

@@ -1,8 +1,0 @@
-0.0epoch:0
-0.0epoch:1
-0.0epoch:2
-0.0epoch:3
-0.0epoch:4
-0.0epoch:5
-0.0epoch:6
-0.0epoch:7

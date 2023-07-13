@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as nnf
 from torch.utils.data import DataLoader
-from muge_data import DataLoader as MugeDataloader
 from torch.utils.data.distributed import DistributedSampler
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
@@ -19,7 +18,7 @@ from dataset import create_dataset
 
 import time
 import warnings
-from models3 import MappingType,ClipCaptionPrefix,ClipCaptionModel
+from models import MappingType,ClipCaptionPrefix,ClipCaptionModel
 
 def save_config(args):
     config_path = os.path.join(args.output_dir,"config")
